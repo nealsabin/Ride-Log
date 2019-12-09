@@ -1,0 +1,4 @@
+﻿Commons, 2.5, sunny
+VASA, 3, cloudy
+Glacial Hills, 2.25, snow
+Harlow Lake, 2, partlycloudy

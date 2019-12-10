@@ -41,35 +41,6 @@ namespace Rides
 
         }
 
-        //static List<Ride> InitializeMonsterList()
-        //{
-        //    //
-        //    // create a list of rides
-        //    //
-        //    List<Ride> rides = new List<Ride>()
-        //    {
-
-        //        new Ride()
-        //        {
-        //            TrailSystem = "Commons",
-        //            Duration = 1.5,
-        //            Weather = Ride.WeatherCondition.sunny
-        //        },
-
-        //        new Ride()
-        //        {
-        //            TrailSystem = "VASA",
-        //            Duration = 3.5,
-        //            Weather = Ride.WeatherCondition.cloudy
-        //        }
-
-        //    };
-
-        //    Console.WriteLine(rides[0]);
-
-        //    return rides;
-        //}
-
         static void WriteToDataFile(List<Ride> rides)
         {
             string[] rideStrings = new string[rides.Count];
@@ -379,18 +350,20 @@ namespace Rides
                     }
                     else
                     {
-                        DisplayErrorMessage();
+                        //DisplayErrorMessage();
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                         Console.Write("\tNew Duration (hours): ");
                         Console.ForegroundColor = ConsoleColor.Black;
+                        DisplayErrorMessage();
                         validInput = false;
+                        break;
                     }
                 } while (!validInput);
             }
 
             Console.WriteLine($"\tCurrent Distance (miles): {selectedRide.Miles}");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("\tNew Distance (miles: ");
+            Console.Write("\tNew Distance (miles): ");
             Console.ForegroundColor = ConsoleColor.Black;
             userResponse = Console.ReadLine();
             Console.WriteLine();
@@ -439,9 +412,6 @@ namespace Rides
                     }
                 } while (!validInput);
             }
-
-
-
 
             Console.WriteLine($"\tCurrent Date: {selectedRide.Date}");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -512,50 +482,62 @@ namespace Rides
 
         static void DisplayViewRideDetail(List<Ride> rides)
         {
-            DisplayScreenHeader("Ride Detail");
-
-            //
-            // display all ride names
-            //
-            Console.WriteLine("\tRide Names");
-            Console.WriteLine("\t-------------");
-            foreach (Ride ride in rides)
-            {
-                Console.WriteLine("\t" + ride.TrailSystem);
-            }
-
-            //
-            // get user ride choice
-            //
-            Console.WriteLine();
-            Console.Write("\tEnter name:");
-            string rideName = Console.ReadLine();
-
-            //
-            // get ride object
-            //
+            bool validResponse = false;
             Ride selectedRide = null;
-            foreach (Ride ride in rides)
+
+            do
             {
-                if (ride.TrailSystem == rideName)
+                DisplayScreenHeader("Ride Detail");
+
+                //
+                // display all ride names
+                //
+                Console.WriteLine("\tRide Names");
+                Console.WriteLine("\t-------------");
+                foreach (Ride ride in rides)
                 {
-                    selectedRide = ride;
-                    break;
+                    Console.WriteLine("\t" + ride.TrailSystem);
                 }
-            }
 
-            //
-            // display ride detail
-            //
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine();
-            Console.WriteLine("\t**************************");
-            RideInfo(selectedRide);
-            Console.WriteLine();
-            Console.WriteLine("\t**************************");
-            Console.ForegroundColor = ConsoleColor.Black;
+                //
+                // get user ride choice
+                //
+                Console.WriteLine();
+                Console.Write("\tEnter name:");
+                string rideName = Console.ReadLine();
 
-            DisplayContinuePrompt();
+                //
+                // get ride object
+                //
+                //Ride selectedRide = null;
+                foreach (Ride ride in rides)
+                {
+                    if (ride.TrailSystem == rideName)
+                    {
+                        selectedRide = ride;
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine();
+                        Console.WriteLine("\t**************************");
+                        RideInfo(selectedRide);
+                        Console.WriteLine();
+                        Console.WriteLine("\t**************************");
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        DisplayContinuePrompt();
+                        validResponse = true;
+                        break;
+                    }
+                }
+
+                if (!validResponse)
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\tPlease select a ride shown above.");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    DisplayContinuePrompt();
+                }
+            } while (!validResponse);
+
         }
 
         static void DisplayAddRide(List<Ride> rides)
@@ -563,37 +545,8 @@ namespace Rides
             // todo - add option to confirm ride input
             Ride newRide = new Ride();
             bool validResponse;
-            //string userResponse, format;
-            //DateTime result;
-            //CultureInfo provider = CultureInfo.InvariantCulture;
-
-            //format = "d";
 
             DisplayScreenHeader("Add Ride");
-
-            //
-            // add ride object property values
-            //
-
-            //do
-            //{
-            //    Console.Write("\tDate of Ride: ");
-
-            //    if (result = DateTime.ParseExact(ride.Date,format,provider))
-            //    {
-            //        newRide.Date = Convert.ToDateTime(Console.ReadLine());
-            //        validResponse = true;
-            //    }
-            //    else
-            //    {
-            //        // FIX
-            //        Console.WriteLine();
-            //        Console.WriteLine("Please enter a number; 5, 25, 555");
-            //        Console.WriteLine();
-            //        validResponse = false;
-            //    }
-
-            //} while (!validResponse);
 
             Console.Write("\tDate of Ride: ");
             newRide.Date = Convert.ToDateTime(Console.ReadLine());

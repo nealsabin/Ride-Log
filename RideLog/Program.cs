@@ -19,6 +19,9 @@ namespace Rides
     // **************************************************    
     class Program
     {
+        /// <summary>
+        /// opening screen
+        /// </summary>
         static void Main(string[] args)
         {
             //
@@ -41,6 +44,9 @@ namespace Rides
 
         }
 
+        /// <summary>
+        /// write data list to file
+        /// </summary>
         static void WriteToDataFile(List<Ride> rides)
         {
             string[] rideStrings = new string[rides.Count];
@@ -72,6 +78,10 @@ namespace Rides
             File.WriteAllLines("Data\\Data.txt", rideStrings);
         }
 
+        /// <summary>
+        /// reads data from text file into an array
+        /// </summary>
+        /// <returns></returns>
         static List<Ride> ReadFromDataFile()
         {
             List<Ride> rides = new List<Ride>();
@@ -115,6 +125,9 @@ namespace Rides
             return rides;
         }
 
+        /// <summary>
+        /// main menu
+        /// </summary>
         static void DisplayMenuScreen(List<Ride> rides)
         {
             bool quitApplication = false;
@@ -189,11 +202,12 @@ namespace Rides
                         DisplayErrorMessageLetterShown();
                         break;
                 }
-
-
             } while (!quitApplication);
         }
 
+        /// <summary>
+        /// filter by sunny weather
+        /// </summary>
         static void DisplayFilterByWeather(List<Ride> rides)
         {
             List<Ride> filteredWeather = new List<Ride>();
@@ -235,6 +249,9 @@ namespace Rides
             DisplayContinuePrompt();
         }
 
+        /// <summary>
+        /// writes current list to text file
+        /// </summary>
         static void DisplayWriteToFile(List<Ride> rides)
         {
             DisplayScreenHeader("Write to Data File");
@@ -246,7 +263,9 @@ namespace Rides
 
             // process the exceptions
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\tData written to file correctly.");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
 
             DisplayContinuePrompt();
 
@@ -261,7 +280,6 @@ namespace Rides
 
             bool validResponse = false;
             Ride selectedRide = null;
-            bool validInput;
 
             do
             {
@@ -283,7 +301,7 @@ namespace Rides
                 Console.WriteLine("\t-------------");
                 Console.WriteLine();
                 Console.Write("\tEnter name:");
-                string rideName = Console.ReadLine();
+                string rideName = Console.ReadLine().ToUpper();
 
                 //
                 // get ride object
@@ -322,114 +340,151 @@ namespace Rides
             Console.WriteLine("\tReady to update. Press enter to keep the current info.");
             Console.WriteLine();
 
+            //
+            // update trails system name
+            //
             Console.WriteLine($"\tCurrent Trail System: {selectedRide.TrailSystem}");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("\tNew Trail System: ");
             Console.ForegroundColor = ConsoleColor.Black;
-            userResponse = Console.ReadLine();
+            userResponse = Console.ReadLine().ToUpper();
             Console.WriteLine();
             if (userResponse != "")
             {
                 selectedRide.TrailSystem = userResponse;
             }
 
-            Console.WriteLine($"\tCurrent Duration (hours): {selectedRide.Duration}");
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("\tNew Duration (hours): ");
-            Console.ForegroundColor = ConsoleColor.Black;
-            userResponse = Console.ReadLine();
-            Console.WriteLine();
-            if (userResponse != "")
+            //
+            // update date of ride
+            //
+            bool validDate = false;
+            do
             {
-                do
+                Console.WriteLine($"\tCurrent Date: {selectedRide.Date}");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("\tNew Date: ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                userResponse = Console.ReadLine();
+                Console.WriteLine();
+                if (userResponse != "")
+                {
+                    if (DateTime.TryParse(userResponse, out DateTime date))
+                    {
+                        selectedRide.Date = date;
+                        validDate = true;
+                    }
+                    else
+                    {
+                        DisplayDateErrorMessage();
+                    }
+                }
+                if (userResponse == "")
+                {
+                    validDate = true;
+                }
+            } while (!validDate);
+
+            //
+            // update duration of ride
+            //
+            bool validDuration = false;
+            do
+            {
+                Console.WriteLine($"\tCurrent Duration (hours): {selectedRide.Duration}");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("\tNew Duration (hours): ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                userResponse = Console.ReadLine();
+                Console.WriteLine();
+                if (userResponse != "")
                 {
                     if (double.TryParse(userResponse, out double duration) & duration > 0)
                     {
                         selectedRide.Duration = duration;
-                        validInput = true;
+                        validDuration = true;
                     }
                     else
                     {
-                        //DisplayErrorMessage();
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write("\tNew Duration (hours): ");
-                        Console.ForegroundColor = ConsoleColor.Black;
                         DisplayErrorMessage();
-                        validInput = false;
-                        break;
                     }
-                } while (!validInput);
-            }
+                }
+                if (userResponse == "")
+                {
+                    validDuration = true;
+                }
+            } while (!validDuration);
 
-            Console.WriteLine($"\tCurrent Distance (miles): {selectedRide.Miles}");
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("\tNew Distance (miles): ");
-            Console.ForegroundColor = ConsoleColor.Black;
-            userResponse = Console.ReadLine();
-            Console.WriteLine();
-            if (userResponse != "")
+            //
+            // update distance of ride
+            //
+            bool validDistance = false;
+            do
             {
-                do
+                Console.WriteLine($"\tCurrent Distance (miles): {selectedRide.Miles}");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("\tNew Distance (miles): ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                userResponse = Console.ReadLine();
+                Console.WriteLine();
+                if (userResponse != "")
                 {
                     if (double.TryParse(userResponse, out double miles) & miles > 0)
                     {
                         selectedRide.Miles = miles;
-                        validInput = true;
+                        validDistance = true;
                     }
                     else
                     {
                         DisplayErrorMessage();
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write("\tNew Distance: ");
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        validInput = false;
                     }
-                } while (!validInput);
-            }
+                }
+                if (userResponse == "")
+                {
+                    validDistance = true;
+                }
+            } while (!validDistance);
 
-            Console.WriteLine($"\tCurrent Weather: {selectedRide.Weather}");
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("\tNew Weather: ");
-            Console.ForegroundColor = ConsoleColor.Black;
-            userResponse = Console.ReadLine();
-            Console.WriteLine();
-            if (userResponse != "")
+            //
+            // update weather of ride
+            //
+            bool validWeather = false;
+            do
             {
-                do
+                Console.WriteLine($"\tCurrent Weather: {selectedRide.Weather}");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("\tNew Weather: ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                userResponse = Console.ReadLine().ToLower().Replace(" ", "");
+                Console.WriteLine();
+                if (userResponse != "")
                 {
                     if (Enum.TryParse(userResponse, out Ride.WeatherCondition weather))
                     {
                         selectedRide.Weather = weather;
-                        validInput = true;
+                        validWeather = true;
                     }
                     else
                     {
                         DisplayWeatherErrorMessage();
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write("\tNew Weather: ");
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        validInput = false;
                     }
-                } while (!validInput);
-            }
-
-            Console.WriteLine($"\tCurrent Date: {selectedRide.Date}");
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("\tNew Date: ");
-            Console.ForegroundColor = ConsoleColor.Black;
-            userResponse = Console.ReadLine();
-            Console.WriteLine();
-            if (userResponse != "")
-            {
-                selectedRide.Date = Convert.ToDateTime(userResponse);
-            }
+                }
+                if (userResponse == "")
+                {
+                    validWeather = true;
+                }
+            } while (!validWeather);
 
             DisplayContinuePrompt();
 
         }
 
+        /// <summary>
+        /// deletes a user input ride
+        /// </summary>
         static void DisplayDeleteRide(List<Ride> rides)
         {
+            // todo - update to include loop for user input
+
             DisplayScreenHeader("Delete Ride");
 
             //
@@ -447,7 +502,7 @@ namespace Rides
             //
             Console.WriteLine();
             Console.Write("\tEnter name:");
-            string rideName = Console.ReadLine();
+            string rideName = Console.ReadLine().ToUpper();
 
             //
             // get ride object
@@ -480,6 +535,9 @@ namespace Rides
             DisplayContinuePrompt();
         }
 
+        /// <summary>
+        /// displays ride details for a user input trail name
+        /// </summary>
         static void DisplayViewRideDetail(List<Ride> rides)
         {
             bool validResponse = false;
@@ -504,7 +562,7 @@ namespace Rides
                 //
                 Console.WriteLine();
                 Console.Write("\tEnter name:");
-                string rideName = Console.ReadLine();
+                string rideName = Console.ReadLine().ToUpper();
 
                 //
                 // get ride object
@@ -540,6 +598,9 @@ namespace Rides
 
         }
 
+        /// <summary>
+        /// add a ride
+        /// </summary>
         static void DisplayAddRide(List<Ride> rides)
         {
             // todo - add option to confirm ride input
@@ -548,8 +609,21 @@ namespace Rides
 
             DisplayScreenHeader("Add Ride");
 
-            Console.Write("\tDate of Ride: ");
-            newRide.Date = Convert.ToDateTime(Console.ReadLine());
+            do
+            {
+                Console.Write("\tDate of Ride: ");
+                if (DateTime.TryParse(Console.ReadLine(),out DateTime date))
+                {
+                    newRide.Date = date;
+                    validResponse = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    DisplayDateErrorMessage();
+                    validResponse = false;
+                }
+            } while (!validResponse);
 
             Console.Write("\tTrail System: ");
             newRide.TrailSystem = Console.ReadLine();
@@ -562,7 +636,7 @@ namespace Rides
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.Write("\tTrail System: ");
-                newRide.TrailSystem = Console.ReadLine();
+                newRide.TrailSystem = Console.ReadLine().ToUpper();
             }
 
             do
@@ -576,6 +650,7 @@ namespace Rides
                 }
                 else
                 {
+                    Console.WriteLine();
                     DisplayErrorMessage();
                     validResponse = false;
                 }
@@ -592,6 +667,7 @@ namespace Rides
                 }
                 else
                 {
+                    Console.WriteLine();
                     DisplayErrorMessage();
                     validResponse = false;
                 }
@@ -601,13 +677,14 @@ namespace Rides
             {
                 Console.Write("\tWeather: ");
 
-                if (Enum.TryParse(Console.ReadLine(), out Ride.WeatherCondition weather))
+                if (Enum.TryParse(Console.ReadLine().ToLower().Replace(" ",""), out Ride.WeatherCondition weather))
                 {
                     newRide.Weather = weather;
                     validResponse = true;
                 }
                 else
                 {
+                    Console.WriteLine();
                     DisplayWeatherErrorMessage();
                     validResponse = false;
                 }
@@ -627,6 +704,9 @@ namespace Rides
             rides.Add(newRide);
         }
 
+        /// <summary>
+        /// displays all input rides
+        /// </summary>
         static void DisplayAllRides(List<Ride> rides)
         {
             DisplayScreenHeader("All Rides");
@@ -642,6 +722,9 @@ namespace Rides
             DisplayContinuePrompt();
         }
 
+        /// <summary>
+        /// displays ride info
+        /// </summary>
         static void RideInfo(Ride ride)
         {
             Console.WriteLine($"\tName: {ride.TrailSystem}");
@@ -712,9 +795,16 @@ namespace Rides
         /// </summary>
         static void DisplayErrorMessage()
         {
-            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\tPlease enter a number; 1.5, 3, 5.5");
+            Console.WriteLine("\tPlease enter a valid number; 1.5, 3, 5.5");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Black;
+        }
+
+        static void DisplayDateErrorMessage()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\tPlease enter a valid date; 12/3/2019, 12-3-2019, 12.3.19");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Black;
         }
@@ -724,7 +814,6 @@ namespace Rides
         /// </summary>
         static void DisplayWeatherErrorMessage()
         {
-            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\tPlease enter a valid weather condition; none, sunny, cloudy, partly cloudy, rain, or snow");
             Console.WriteLine();
